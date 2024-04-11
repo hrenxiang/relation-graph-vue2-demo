@@ -2,40 +2,39 @@
   <g>
     <!-- 常规方式 -->
     <path
-      :d="pathData.path"
-      :class="['c-rg-line', relation.styleClass, checked ? 'c-rg-line-checked' : '']"
-      :stroke="
+        :d="pathData.path"
+        :class="['c-rg-line', relation.styleClass, checked ? 'c-rg-line-checked' : '']"
+        :stroke="
         checked
           ? options.checkedLineColor
           : relation.color
           ? relation.color
           : options.defaultLineColor
       "
-      :style="{
+        :style="{
         'opacity': relation.opacity,
         'stroke-width':
           (relation.lineWidth
             ? relation.lineWidth
             : options.defaultLineWidth) + 'px',
       }"
-      :marker-start="showStartArrow"
-      :marker-end="showEndArrow"
-      fill="none"
-      @click="onClick(relation, $event)"
+        :marker-start="showStartArrow"
+        :marker-end="showEndArrow"
+        fill="none"
+        @click="onClick(relation, $event)"
     />
     <g
-      v-if="
-        options.defaultShowLineLabel &&
-        options.canvasZoom > 40
+        v-if="
+        options.defaultShowLineLabel && relation.text
       "
-      :transform="pathData.textTransform"
+        :transform="pathData.textTransform"
     >
       <rect
-        :key="'t-' + relation.seeks_id"
-        rx="15" ry="15"
-        :x="-30"
-        :y="-15"
-        :style="{
+          :key="'t-' + relation.seeks_id"
+          rx="15" ry="15"
+          :x="-40"
+          :y="0"
+          :style="{
           opacity: relation.opacity,
           fill: checked
             ? options.checkedLineColor
@@ -45,18 +44,17 @@
             ? relation.color
             : undefined,
         }"
-        class="c-rg-line-text-bg"
-        @click="onClick(relation, $event)"
+          class="c-rg-line-text-bg"
+          @click="onClick(relation, $event)"
       >
       </rect>
       <text
-          :x="0"
-          :y="4"
+          :x="-24"
+          :y="19"
           :style="{
-          opacity: relation.opacity,
-          fill: '#ffffff'
+          opacity: relation.opacity
         }"
-          class="c-rg-line-text my-line-text"
+          class="c-rg-line-text"
           @click="onClick(relation, $event)"
       >
         {{ relation.text }}
@@ -67,7 +65,7 @@
 
 <script>
 export default {
-  name: 'MyLineSlot',
+  name: 'LineSlot2',
   props: {
     link: {
       mustUseProp: true,
@@ -96,7 +94,7 @@ export default {
       is_flashing: false,
     };
   },
-  inject: ['graph'],
+  inject: ['graph', 'graphInstance'],
   computed: {
     checked() {
       return this.relation.id === this.options.checkedLineId;
@@ -110,9 +108,9 @@ export default {
     pathData() {
       try {
         const { path, textPosition } = this.relationGraph.createLinePath(
-          this.link,
-          this.relation,
-          this.relationIndex
+            this.link,
+            this.relation,
+            this.relationIndex
         );
         let textTransform = {}
         try {
@@ -136,7 +134,7 @@ export default {
       return this.graph.options;
     },
     relationGraph() {
-      return this.graph.instance;
+      return this.graphInstance();
     }
   },
   show() {
@@ -166,6 +164,10 @@ export default {
   font-size: 12px;
   border-radius: 10px;
 }
+.c-rg-line-text {
+  fill: #ffffff;
+  font-size: 12px;
+}
 .c-rg-line {
   z-index: 1000;
   fill-rule: nonzero;
@@ -177,6 +179,32 @@ export default {
 }
 .c-rg-line-tool {
   stroke-dasharray: 5, 5, 5;
+}
+.c-rg-line-flash {
+  /* firefox bug fix - won't rotate at 90deg angles */
+  -moz-transform: rotate(-89deg) translateX(-190px);
+  animation-timing-function: linear;
+  animation: ACTRGLineChecked 10s;
+}
+@keyframes ACTRGLineInit {
+  from {
+    stroke-dashoffset: 10px;
+    stroke-dasharray: 20, 20, 20;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+    stroke-dasharray: 0, 0, 0;
+  }
+}
+@keyframes ACTRGLineChecked {
+  from {
+    stroke-dashoffset: 352px;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 .c-rg-line-checked {
   /*stroke: var(--stroke);*/

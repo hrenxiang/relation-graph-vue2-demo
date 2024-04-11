@@ -1,8 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 
-import RelationGraph from "relation-graph";
-Vue.use(RelationGraph);
+import 'virtual:svg-icons-register';
 Vue.config.productionTip = false;
 new Vue({
   render: (h) => h(App)

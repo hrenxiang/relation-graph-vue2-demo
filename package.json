@@ -10,11 +10,14 @@
     "@types/nprogress": "^0.2.0",
     "axios": "0.18.1",
     "core-js": "^3.29.1",
-    "relation-graph": "2.1.21"
+    "element-ui": "^2.15.14",
+    "fast-glob": "^3.3.2",
+    "relation-graph": "2.1.38"
   },
   "devDependencies": {
     "sass": "^1.59.2",
     "vite": "^4.1.0",
+    "vite-plugin-svg-icons": "^2.0.1",
     "vite-plugin-vue2": "^2.0.3",
     "vue": "2.7.14",
     "vue-router": "^3.2.0",
